@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+hello
+<div id="button">
+    <!-- `greet` — это название метода, определённого ниже -->
+    <button v-on:click="greet">Поприветствовать</button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+    var elem = new Vue({
+        el: "#testing",
+        data: {
+            messages: [
+            ]
+        }
+    });
+    var button = new Vue({
+        el: "#button",
+        methods: {
+            async greet() {
+                const headers = {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*"
+                };
+                await axios.get("http://192.168.0.218:3000/run_task", {headers})
+                    .then(response => this.result = response.data.data);
+                console.log(this.result)
+                elem.messages = [{"text": this.result}]
+                await new Promise(r => setTimeout(r, 2000));
+                elem.messages = []
+                console.log("end")
+            }
+        }
+    });
+</script>
+{% endblock %}

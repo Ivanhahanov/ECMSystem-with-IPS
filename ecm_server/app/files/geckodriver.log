@@ -1,0 +1,12 @@
+1596885229651	geckodriver	INFO	Listening on 127.0.0.1:59655
+1596885230679	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofileM3EYxd"
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+[fresh] [error] probe_ppp_module, can't find libpepflashplayer.so
+console.error: SearchCache: "_readCacheFile: Error reading cache file:" (new Error("", "(unknown module)"))
+1596885239480	Marionette	INFO	Listening on port 43575
+1596885239554	Marionette	WARN	TLS certificate errors will be ignored for this session
+1596885243077	Marionette	INFO	Stopped listening on port 43575

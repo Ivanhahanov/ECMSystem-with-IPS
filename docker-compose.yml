@@ -1,0 +1,98 @@
+version: "3.7"
+services:
+  ecm_server:
+    build:
+      context: ecm_server
+    ports:
+      - "8080:80"
+    volumes:
+      - type: bind
+        source: ./ecm_server/app
+        target: /app
+    depends_on:
+      - elasticsearch
+    networks:
+      - ecm_network
+
+  frontserver:
+    build:
+      context: frontserver/app
+    container_name: vue
+    ports:
+      - 8000:8080
+    volumes:
+      - type: bind
+        source: ./frontserver/app
+        target: /app
+    depends_on:
+      - ecm_server
+    networks:
+      - ecm_network
+
+  elasticsearch:
+    build:
+      context: elastic/
+      args:
+        ELK_VERSION: 7.8.0
+    volumes:
+      - type: bind
+        source: ./elastic/config/elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        read_only: true
+      - type: volume
+        source: elasticsearch
+        target: /usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: changeme
+    networks:
+      - ecm_network
+
+  kibana:
+    build:
+      context: kibana/
+      args:
+        ELK_VERSION: 7.8.0
+    volumes:
+      - type: bind
+        source: ./kibana/config/kibana.yml
+        target: /usr/share/kibana/config/kibana.yml
+        read_only: true
+    ports:
+      - "5601:5601"
+    networks:
+      - ecm_network
+    depends_on:
+      - elasticsearch
+
+  ntsecurity:
+    build:
+      context: NTSecurity/
+    volumes:
+      - type: bind
+        source: ./NTSecurity/app
+        target: /app
+    ports:
+      - 3000:3000
+    depends_on:
+      - ecm_server
+
+  redis:
+    image: "redis:alpine"
+    command: redis-server --requirepass sOmE_sEcUrE_pAsS
+
+    volumes:
+      - $PWD/redis/redis-data:/var/lib/redis
+      - $PWD/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+volumes:
+  elasticsearch:
+
+networks:
+  ecm_network:
+    driver: bridge
